@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 
 data = pd.read_csv('final_data.csv')
-print(data.head())
+
 
 #Prepare the data
 X = data
@@ -21,5 +21,12 @@ rf.fit(X, pseudo_target)
 
 #Use SelectFromModel to select top features based on importance
 selector = SelectFromModel(rf, threshold="median", prefit=True)
-X_reduced = selector.transform(X)
-print(X_reduced.shape)
+X_reduced = selector.transform(X.values)
+selected_features = X.columns[selector.get_support()]
+#print(X_reduced.shape)
+#print(selected_features)
+
+#save the selected features into a new csv file
+X_selected = pd.DataFrame(X_reduced, columns=selected_features)
+X_selected.to_csv('selected_features.csv', index=False)
+print(X_selected.head())

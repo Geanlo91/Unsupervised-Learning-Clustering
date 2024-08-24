@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import io
 import seaborn as sns
+import os
 from sklearn.preprocessing import LabelEncoder
 
 
@@ -58,7 +59,7 @@ def preprocess_data(data, missing_threshold=0.6):
         .replace(to_replace=['26-100', '6-25', '100-500', 'More than 1000', '500-1000', '1-5','unknown'], value=[100, 25, 500, 1500, 1000, 5,1])
 
     mapping = {
-        '*Yes': 2, 
+        'Yes': 2, 
         'No': 0, 
         'Maybe': 1, 
         "I don't know": 1, 
@@ -69,17 +70,24 @@ def preprocess_data(data, missing_threshold=0.6):
         'Yes, I think it would' : 2, 
         "No, I don't think it would": 0,
         'None did': 0,
+        'Yes, it has': 2,
+        'No, it has not': 0,
+        'Neutral': 1,
+        'No, they do not': 0,
+        'Yes, they do': 2,
         'Some did': 1.5,
         'Yes, they all did': 2,
         'Yes, all of them': 2,
         'None of them': 0,
         'Some of them': 1.5,
-        'Yes, I think it would': 2,
-        "No, I don't think it would": 0,
+        'Yes, I think they would': 2,
+        "No, I don't think they would": 0,
         'No,they do not': 0,
         'Yes, they do': 2,
+        'Yes, always': 2,
         'Maybe/Not sure': 1,
         'Yes, I observed': 2,
+        'Yes, I experienced': 2,
         #map empty strings to unknown
         '': 1,
         'M': 1,
@@ -90,12 +98,25 @@ def preprocess_data(data, missing_threshold=0.6):
         'Yes, I was aware of all of them': 2,
         'I was aware of some': 1,
         'No, I only became aware later': 0,
-        'N/A (not currently aware)': 0,}
+        'N/A (not currently aware)': 0,
+        'Some of my previous employers': 1.5,
+        'Yes, at all of my previous employers': 2,
+        'No, at none of my previous employers': 0,}
+
 
     #convert categorical columns to numerical values from the mapping dictionary
     object_columns = data.select_dtypes(include=['object']).columns
     for col in object_columns:
             data[col] = data[col].replace(mapping)
+
+
+    #auto encode the "What country do you live in?" column
+    le = LabelEncoder()
+    data['What country do you work in?'] = le.fit_transform(data['What country do you work in?'])
+
+    #delete the 'what country do you live in?' column
+    data = data.drop(['What country do you live in?'], axis=1)
+
 
     return data
 cleaned_data = preprocess_data(data)
@@ -137,13 +158,18 @@ def feature_engineering(cleaned_data):
     #delete the original column
     cleaned_data = cleaned_data.drop(['If you have a mental health issue, do you feel that it interferes with your work when NOT being treated effectively?'], axis=1)
 
-#one hotencode the "Which of the following best describes your work position?" column. Split the column into multiple columns using | as the separator
+    #Create a new column "Sharing mental health issue with family and friends" based on the "How willing would you be to share with friends and family that you have a mental illness?" column
+    cleaned_data['Sharing mental health issue with family and friends'] = cleaned_data['How willing would you be to share with friends and family that you have a mental illness?']\
+        .replace(to_replace=['Very open','Somewhat open','Neutral','Somewhat not open','Not applicable to me (I do not have a mental illness)','Not open at all', 'unknown'], value=[5,4,3,2,1,0,-1])
+    #delete the original column
+    cleaned_data = cleaned_data.drop(['How willing would you be to share with friends and family that you have a mental illness?'], axis=1)
+
+
+#one hot encode the "Which of the following best describes your work position?" column. Split the column into multiple columns using | as the separator
 
     split_positions = cleaned_data['Which of the following best describes your work position?'].str.get_dummies(sep='|')
-
     # Concatenate the new columns with the original DataFrame
     cleaned_data = pd.concat([cleaned_data, split_positions], axis=1)
-
     #drop the original column
     cleaned_data.drop('Which of the following best describes your work position?', axis=1, inplace=True)
     #drop the "other" column
@@ -157,11 +183,12 @@ final_data = feature_engineering(cleaned_data)
 
 
 #save the cleaned data to a new csv file
-final_data.to_csv('final_data.csv', index=False)
-print('Data cleaning and preprocessing complete!')
+if  'final_data.csv' in os.listdir():
+        print('File already exists, Data cleaning and feature engineering completed successfully', final_data.dtypes)
+else:
+     final_data.to_csv('final_data.csv', index=False)
 
-#print unique values in the " What country do you live in?" column
-print(final_data['What country do you live in?'].unique())
+
 
 
 
