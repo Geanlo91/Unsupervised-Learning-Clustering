@@ -5,6 +5,8 @@ import io
 import seaborn as sns
 import os
 from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import StandardScaler
+
 
 
 
@@ -175,6 +177,9 @@ def feature_engineering(cleaned_data):
     #drop the "other" column
     cleaned_data.drop('Other', axis=1, inplace=True)
 
+    #scale the "How many employees does your company or organization have?" column
+    scaler = StandardScaler()
+    cleaned_data['How many employees does your company or organization have?'] = scaler.fit_transform(cleaned_data[['How many employees does your company or organization have?']])
         
     
     return cleaned_data
@@ -184,6 +189,8 @@ final_data = feature_engineering(cleaned_data)
 
 #save the cleaned data to a new csv file
 if  'final_data.csv' in os.listdir():
+        #overwrite the file
+        final_data.to_csv('final_data.csv', index=False)
         print('File already exists, Data cleaning and feature engineering completed successfully', final_data.dtypes)
 else:
      final_data.to_csv('final_data.csv', index=False)

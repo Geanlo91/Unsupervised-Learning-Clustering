@@ -29,4 +29,17 @@ selected_features = X.columns[selector.get_support()]
 #save the selected features into a new csv file
 X_selected = pd.DataFrame(X_reduced, columns=selected_features)
 X_selected.to_csv('selected_features.csv', index=False)
-print(X_selected.head())
+#print(X_selected.dtypes)
+print(X_selected.shape)
+
+
+# Splits the data into training and test sets.
+# Computes the Gower distance matrix for the training data.
+# Trains an Agglomerative Clustering model on the training data.
+# Computes the Gower distance matrix for the test data with respect to the training data.
+# Assigns cluster labels to the test data based on the nearest clusters from the training data.
+# Saves the cluster labels for the test data into a new CSV file.
+# This function can be used to cluster new data based on the patterns observed in the training data, allowing for the application of machine learning models to new datasets.
+# The code snippet above demonstrates how to use the Gower distance metric to compute the distance matrix for both training and test data. The training data is then clustered using the Agglomerative Clustering algorithm, and the cluster labels are assigned to the test data based on the nearest clusters from the training data. This approach allows for clustering of test data based on the patterns observed in the training data.
+
+#alculate the silhouette score using the precomputed Gower distance matrix
