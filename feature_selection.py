@@ -4,6 +4,8 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import numpy as np
+from sklearn.feature_selection import RFE
+import matplotlib.pyplot as plt
 
 data = pd.read_csv('final_data.csv')
 
@@ -11,35 +13,45 @@ data = pd.read_csv('final_data.csv')
 #Prepare the data
 X = data
 
-#Creating a pseudo-target for Random Forest (using random labels)
-np.random.seed(42)
-pseudo_target = np.random.randint(0, 2, size=X.shape[0])
-
 #Train a Random Forest Classifier
-rf = RandomForestClassifier(n_estimators=100, random_state=42)
-rf.fit(X, pseudo_target)
+rf = RandomForestClassifier(n_estimators=300,max_depth=10,min_samples_split=5, random_state=42)
+
+#Creating multiple pseudo-targets
+importances = np.zeros(X.shape[1])
+
+for _ in range(10):
+          pseudo_target = np.random.randint(0, 2, X.shape[0])
+          rf.fit(X, pseudo_target)
+          importances += rf.feature_importances_
+
+importances /= 10
+    
 
 #Use SelectFromModel to select top features based on importance
-selector = SelectFromModel(rf, threshold="median", prefit=True)
+selector = SelectFromModel(rf, threshold='median', prefit=True)
 X_reduced = selector.transform(X.values)
-selected_features = X.columns[selector.get_support()]
-#print(X_reduced.shape)
-#print(selected_features)
-
-#save the selected features into a new csv file
-X_selected = pd.DataFrame(X_reduced, columns=selected_features)
-X_selected.to_csv('selected_features.csv', index=False)
-#print(X_selected.dtypes)
-print(X_selected.shape)
+selected_features_SFM = X.columns[selector.get_support()]
 
 
-# Splits the data into training and test sets.
-# Computes the Gower distance matrix for the training data.
-# Trains an Agglomerative Clustering model on the training data.
-# Computes the Gower distance matrix for the test data with respect to the training data.
-# Assigns cluster labels to the test data based on the nearest clusters from the training data.
-# Saves the cluster labels for the test data into a new CSV file.
-# This function can be used to cluster new data based on the patterns observed in the training data, allowing for the application of machine learning models to new datasets.
-# The code snippet above demonstrates how to use the Gower distance metric to compute the distance matrix for both training and test data. The training data is then clustered using the Agglomerative Clustering algorithm, and the cluster labels are assigned to the test data based on the nearest clusters from the training data. This approach allows for clustering of test data based on the patterns observed in the training data.
+#Rank features based on importance using RFE
+rfe = RFE(estimator=rf, n_features_to_select=20, step=1)
+rfe.fit(X_reduced, pseudo_target)
+selected_features_final = selected_features_SFM[rfe.support_]
 
-#alculate the silhouette score using the precomputed Gower distance matrix
+
+#visualise the selected features and save them to a csv file
+selected_features = pd.DataFrame(selected_features_final, columns=['selected_features'])
+
+#Feature importance visulaization
+importances = rf.feature_importances_
+indices = np.argsort(importances)[::-1]
+plt.figure(figsize=(10, 5))
+plt.title("Feature importances")
+plt.bar(range(X.shape[1]), importances[indices], align="center")
+plt.xticks(range(X.shape[1]), X.columns[indices], rotation=90)
+plt.show()
+
+selected_features_data = X[selected_features_final]
+selected_features_data.to_csv('selected_features.csv', index=False)
+print(selected_features_data.shape)
+print(selected_features_data.head())

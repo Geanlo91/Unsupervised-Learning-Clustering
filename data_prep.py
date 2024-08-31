@@ -45,8 +45,9 @@ def preprocess_data(data, missing_threshold=0.6):
     for col in object_cols:
         data[col] = data[col].fillna('unknown')
 
-    # Delete rows with missing "What is your age?" values
+    # Delete rows with missing values in  "What is your age?" column and any age above 100
     data = data.dropna(subset=['What is your age?'])
+    data = data.drop(data[data['What is your age?'] > 100].index)
 
     # Standardize "What is your gender?" column
     data['What is your gender?'] = data['What is your gender?']\
@@ -64,7 +65,7 @@ def preprocess_data(data, missing_threshold=0.6):
         'Yes': 2, 
         'No': 0, 
         'Maybe': 1, 
-        "I don't know": 1, 
+        "I don't know": -1, 
         'unknown': -1, 
         'Not eligible for coverage / N/A': 0, 
         'N/A' :0, 
@@ -77,11 +78,11 @@ def preprocess_data(data, missing_threshold=0.6):
         'Neutral': 1,
         'No, they do not': 0,
         'Yes, they do': 2,
-        'Some did': 1.5,
+        'Some did': 1,
         'Yes, they all did': 2,
         'Yes, all of them': 2,
         'None of them': 0,
-        'Some of them': 1.5,
+        'Some of them': 1,
         'Yes, I think they would': 2,
         "No, I don't think they would": 0,
         'No,they do not': 0,
@@ -101,7 +102,7 @@ def preprocess_data(data, missing_threshold=0.6):
         'I was aware of some': 1,
         'No, I only became aware later': 0,
         'N/A (not currently aware)': 0,
-        'Some of my previous employers': 1.5,
+        'Some of my previous employers': 1,
         'Yes, at all of my previous employers': 2,
         'No, at none of my previous employers': 0,}
 
@@ -129,28 +130,28 @@ cleaned_data = preprocess_data(data)
 def feature_engineering(cleaned_data):
 
     mapping1 = { 
-        'Yes': 2, 'No': 0, 'Maybe': 1, "I don't know": 1}
+        'Yes': 2, 'No': 0, 'Maybe': 1, "I don't know": -1}
 
     # Create a new column "mental_vs_physical" based on the "Do you think that discussing a mental health disorder with your employer would have negative consequences?" column
-    cleaned_data['mental_health_work_fears'] = cleaned_data['Do you think that discussing a mental health disorder with your employer would have negative consequences?' ].replace(mapping1)
+    cleaned_data['Negative consequences from discussing mental health with employer'] = cleaned_data['Do you think that discussing a mental health disorder with your employer would have negative consequences?' ].replace(mapping1)
     #delete the original column
     cleaned_data = cleaned_data.drop(['Do you think that discussing a mental health disorder with your employer would have negative consequences?' ], axis=1)
 
     # Create a new column "Healthwork_benefits" based on the "Have your previous employers provided mental health benefits?" column in int format
-    cleaned_data['Healthwork_benefits'] = cleaned_data['Have your previous employers provided mental health benefits?']\
-        .replace(to_replace=['Some did', 'Yes, they all did', "I don't know",'No, none did','unknown'], value=[1.5, 2, 1, 0,-1])
+    cleaned_data['Have you had mental health benefits before'] = cleaned_data['Have your previous employers provided mental health benefits?']\
+        .replace(to_replace=['Some did', 'Yes, they all did', "I don't know",'No, none did','unknown'], value=[1, 2, -1, 0,-1])
     #delete the original column
     cleaned_data = cleaned_data.drop(['Have your previous employers provided mental health benefits?'], axis=1)
 
     # Create a new column "leave" based on the "If a mental health issue prompted you to request a medical leave from work, asking for that leave would be:" column
-    cleaned_data['Getting_Mental_health_leave'] = cleaned_data['If a mental health issue prompted you to request a medical leave from work, asking for that leave would be:']\
+    cleaned_data['How easy is it to ask for mental health leave?'] = cleaned_data['If a mental health issue prompted you to request a medical leave from work, asking for that leave would be:']\
         .replace(to_replace=['Very easy', 'Somewhat easy','Neither easy nor difficult','Somewhat difficult', 'Very difficult','unknown',"I don't know"], value=[2,1,0,-1,-2,-3,-3])
     #delete the original column
     cleaned_data = cleaned_data.drop(['If a mental health issue prompted you to request a medical leave from work, asking for that leave would be:'], axis=1)
 
     # Create a new column "Mental health effects on work when treated effectively" based on the "If you have a mental health issue, do you feel that it interferes with your work when being treated effectively?" column
     cleaned_data['Mental health effects on work when treated effectively'] = cleaned_data['If you have a mental health issue, do you feel that it interferes with your work when being treated effectively?']\
-        .replace(to_replace=['Not applicable to me', 'Rarely', 'Sometimes', 'Often', 'unknown','Never'], value=[-1, 2, 3, 4,-1,0])
+        .replace(to_replace=['Not applicable to me', 'Rarely', 'Sometimes', 'Often', 'unknown','Never'], value=[-1, 1, 2, 3,-1,0])
     #delete the original column
     cleaned_data = cleaned_data.drop(['If you have a mental health issue, do you feel that it interferes with your work when being treated effectively?'], axis=1)
 
