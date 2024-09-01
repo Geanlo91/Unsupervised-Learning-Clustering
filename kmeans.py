@@ -44,7 +44,7 @@ grouped_data = data.groupby('cluster')
 print(grouped_data.head())
 
 #Visualize the clusters using PCA
-pca = PCA(n_components=10)
+pca = PCA(n_components=20)
 X_pca = pca.fit_transform(data.drop(columns=['cluster']))
 plt.scatter(X_pca[:, 0], X_pca[:, 1], c=clusters_train, cmap='viridis')
 plt.title('PCA of Clusters')

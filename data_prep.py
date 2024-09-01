@@ -57,7 +57,7 @@ def preprocess_data(data, missing_threshold=0.6):
     # Delete rows in the "What is your gender?" column that are not M or F
     data = data.drop(data[(data['What is your gender?'] != 'M') & (data['What is your gender?'] != 'F')].index)
 
-
+    #standardize the"How many employees does your company or organization have?" column
     data['How many employees does your company or organization have?'] = data['How many employees does your company or organization have?']\
         .replace(to_replace=['26-100', '6-25', '100-500', 'More than 1000', '500-1000', '1-5','unknown'], value=[100, 25, 500, 1500, 1000, 5,1])
 
@@ -116,6 +116,9 @@ def preprocess_data(data, missing_threshold=0.6):
     #auto encode the "What country do you live in?" column
     le = LabelEncoder()
     data['What country do you work in?'] = le.fit_transform(data['What country do you work in?'])
+    #print the origibal and encoded values
+    #print(dict(zip(le.classes_, le.transform(le.classes_))))
+          
 
     #delete the 'what country do you live in?' column
     data = data.drop(['What country do you live in?'], axis=1)
