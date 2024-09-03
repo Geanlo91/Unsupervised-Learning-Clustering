@@ -6,6 +6,9 @@ import seaborn as sns
 import os
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+from sklearn.preprocessing import OneHotEncoder
 
 
 
@@ -48,6 +51,11 @@ def preprocess_data(data, missing_threshold=0.6):
     # Delete rows with missing values in  "What is your age?" column and any age above 100
     data = data.dropna(subset=['What is your age?'])
     data = data.drop(data[data['What is your age?'] > 100].index)
+    #check for anomalies in the age column
+    #sns.boxplot(data['What is your age?'])
+    #plt.title('Age distribution')
+    #plt.show()
+
 
     # Standardize "What is your gender?" column
     data['What is your gender?'] = data['What is your gender?']\
@@ -129,7 +137,6 @@ cleaned_data = preprocess_data(data)
 
 
 
-
 def feature_engineering(cleaned_data):
 
     mapping1 = { 
@@ -171,31 +178,72 @@ def feature_engineering(cleaned_data):
     cleaned_data = cleaned_data.drop(['How willing would you be to share with friends and family that you have a mental illness?'], axis=1)
 
 
-#one hot encode the "Which of the following best describes your work position?" column. Split the column into multiple columns using | as the separator
-
+    #one hot encode the "Which of the following best describes your work position?" column. Split the column into multiple columns using | as the separator
     split_positions = cleaned_data['Which of the following best describes your work position?'].str.get_dummies(sep='|')
     # Concatenate the new columns with the original DataFrame
     cleaned_data = pd.concat([cleaned_data, split_positions], axis=1)
-    #drop the original column
-    cleaned_data.drop('Which of the following best describes your work position?', axis=1, inplace=True)
-    #drop the "other" column
-    cleaned_data.drop('Other', axis=1, inplace=True)
+    #drop the original and other columns
+    cleaned_data.drop(['Which of the following best describes your work position?','Other'], axis=1, inplace=True)
+
+
+    # Calculate VIF for all features
+    vif_data = pd.DataFrame()
+    vif_data['feature'] = cleaned_data.columns
+    vif_data['VIF'] = [variance_inflation_factor(cleaned_data.values, i) for i in range(len(cleaned_data.columns))]
+    
+    #drop columns with VIF greater than 10 excluding 'What is your age?' column
+    high_VIF = vif_data[vif_data['VIF'] > 10]
+    for i in high_VIF['feature']:
+        if i != 'What is your age?':
+            cleaned_data = cleaned_data.drop([i], axis=1)
+
+
+    #calculate the correlation matrix
+    corr_matrix = cleaned_data.corr()
+    #identifying the highly correlated features
+    high_threshold = 0.7
+    lower_threshold = -0.7
+    high_corr_pairs = corr_matrix.unstack().sort_values(ascending=False)
+    low_corr_pairs = corr_matrix.unstack().sort_values(ascending=False)
+    high_corr_pairs = high_corr_pairs[(high_corr_pairs > high_threshold) & (high_corr_pairs < 1)]
+    low_corr_pairs = low_corr_pairs[(low_corr_pairs < lower_threshold) & (low_corr_pairs > -1)]
+    #drop one of the highly correlated features from the pairs, Ensure unique columns are dropped and check for existence
+    columns_to_drop = set(i[0] for i in high_corr_pairs.index if i[0] in cleaned_data.columns)
+    cleaned_data = cleaned_data.drop(columns=columns_to_drop)
+    #drop the lowly correlated columns
+    columns_to_drop = set(i[0] for i in low_corr_pairs.index if i[0] in cleaned_data.columns)
+    cleaned_data = cleaned_data.drop(columns=columns_to_drop)
+
 
     #scale the "How many employees does your company or organization have?" column
     scaler = StandardScaler()
     cleaned_data['How many employees does your company or organization have?'] = scaler.fit_transform(cleaned_data[['How many employees does your company or organization have?']])
+
         
-    
     return cleaned_data
 
 final_data = feature_engineering(cleaned_data)
+
+#Calculate VIF for all features again
+vif_data = pd.DataFrame()
+vif_data['feature'] = final_data.columns
+vif_data['VIF'] = [variance_inflation_factor(final_data.values, i) for i in range(len(final_data.columns))]
+print(vif_data)
+
+#Calculate the correlation matrix for features with VIF greater than 3
+high_vif = vif_data[vif_data['VIF'] > 3]
+corr_matrix = final_data[high_vif['feature']].corr()
+sns.heatmap(corr_matrix, annot=True)
+plt.title('Correlation matrix for features with VIF > 3')
+plt.show()
+
 
 
 #save the cleaned data to a new csv file
 if  'final_data.csv' in os.listdir():
         #overwrite the file
         final_data.to_csv('final_data.csv', index=False)
-        print('File already exists, Data cleaning and feature engineering completed successfully', final_data.dtypes)
+        print('File already exists, Data cleaning and feature engineering completed successfully')
 else:
      final_data.to_csv('final_data.csv', index=False)
 

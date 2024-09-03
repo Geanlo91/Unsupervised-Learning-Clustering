@@ -19,9 +19,6 @@ plt.title('Gender per cluster')
 plt.legend(title='Gender ', loc='upper right', labels =['Female','Male'])
 plt.show()
 
-#Describe the data in the 'Mental health effects on work treated effectively' column
-mental_health = data.groupby('cluster')['Mental health effects on work when treated effectively'].describe()
-print(mental_health)
 
 #plot 'Support' column per cluster
 support_count = data.groupby('cluster')['Support'].value_counts().unstack().plot(kind='bar', stacked=True)
@@ -66,11 +63,6 @@ plt.title('Dev Evangelist/Advocate roles  per Cluster')
 plt.legend(title='Responce categories', loc='upper right', labels=['Yes', 'No'])
 plt.show()
 
-#plot number of people pre cluster on the 'Do you think that discussing a physical health issue with your employer would have negative consequences?' column
-sns.countplot(x='cluster', hue='Do you think that discussing a physical health issue with your employer would have negative consequences?', data=data)
-plt.title('Physical health issue discussion with employer per Cluster')
-plt.legend(title='Responce categories', loc='upper right', labels=["I don't know", 'No','Maybe', 'Yes'])
-plt.show()
 
 #plot the average employee size per cluster from the 'How many employees does your company or organization have?' column
 sns.barplot(x='cluster', y='How many employees does your company or organization have?', data=data)
@@ -81,12 +73,6 @@ plt.show()
 sns.countplot(x='cluster', hue='Do you know the options for mental health care available under your employer-provided coverage?', data=data)
 plt.title('Do you know the options for mental health care available under your employer-provided coverage?')
 plt.legend(title='Responce categories', loc='upper right', labels=['No response', 'No','I am not sure', 'Yes'])
-plt.show()
-
-#plot number of people pre cluster on the 'Would you feel comfortable discussing a mental health disorder with your coworkers?' column
-sns.countplot(x='cluster', hue='Would you feel comfortable discussing a mental health disorder with your coworkers?', data=data)
-plt.title('Comfort discussing mental health disorder with coworkers per Cluster')
-plt.legend(title='Responce categories', loc='upper right', labels=['No response', 'No','Maybe','Yes'])
 plt.show()
 
 #plot number of people pre cluster on the 'Were you aware of the options for mental health care provided by your previous employers?' column
@@ -139,12 +125,6 @@ plt.title('Mental health effects on work when treated effectively per Cluster')
 plt.legend(title='Response categories', loc='upper right', labels=['No response', 'Never','Rarely','Often'])
 plt.show()
 
-sns.countplot(x='cluster', hue='Would you feel comfortable discussing a mental health disorder with your coworkers?', data=data)
-plt.title('Comfort discussing mental health disorder with coworkers per Cluster')
-plt.legend(title='Response categories', loc='upper right', labels=['No response', 'No','Maybe','Yes'])
-plt.show()
-
-
 sns.countplot(x='cluster', hue='Do you think that discussing a mental health disorder with previous employers would have negative consequences?', data=data)
 plt.title('Negative consequancesfrom discussing mental health disorder with previous employers per Cluster')
 plt.legend(title='Response categories', loc='upper right', labels=["I don't know", 'None of them','Some of them','Yes, all of them'])
@@ -160,8 +140,17 @@ plt.title('Willingness to discuss mental health issue with direct supervisor per
 plt.legend(title='Response categories', loc='upper right', labels=["I don't know", 'No','Some','Yes,all'])
 plt.show()
 
+#plot number of people pre cluster on the 'Do you think that discussing a physical health issue with your employer would have negative consequences?' column
+sns.countplot(x='cluster', hue='Do you think that discussing a physical health issue with your employer would have negative consequences?', data=data)
+plt.title('Physical health issue discussion with employer per Cluster')
+plt.legend(title='Responce categories', loc='upper right', labels=["I don't know", 'No','Maybe', 'Yes'])
+plt.show()
 
-
+#plot number of people pre cluster on the 'Would you feel comfortable discussing a mental health disorder with your coworkers?' column
+sns.countplot(x='cluster', hue='Would you feel comfortable discussing a mental health disorder with your coworkers?', data=data)
+plt.title('Comfort discussing mental health disorder with coworkers per Cluster')
+plt.legend(title='Responce categories', loc='upper right', labels=['No response', 'No','Maybe','Yes'])
+plt.show()
 
 
 
