@@ -11,13 +11,70 @@ from statsmodels.stats.outliers_influence import variance_inflation_factor
 from sklearn.preprocessing import OneHotEncoder
 
 
-
-
 # Load the data
 data_file = 'mental-heath-in-tech-2016_20161114.csv'
 
 # Read the data
 data = pd.read_csv(data_file)
+
+
+def descriptive_statistics(data):
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.width', 1000)
+    # Display the shape of the dataset
+    print('Data shape:', data.shape)
+    # Display the data types of the columns
+    print('Data types:', data.dtypes)
+    # Display the number of missing values in each column
+    print('Missing values:', data.isnull().sum())
+    # Display the summary statistics of the dataset
+    print('Summary statistics:', data.describe())
+    #rese display options
+    pd.reset_option('display.max_columns')
+    pd.reset_option('display.width')
+
+
+    # Plot the distribution of the 'What is your age?' & 'How many employees does your company or organization have?' columns
+    fig, ax = plt.subplots(1, 2, figsize=(15, 6))
+    #Age distribution with color differentiation for ages > 80
+    age_range = data['What is your age?'].value_counts().sort_index()
+    ax[0].bar(age_range.index, age_range.values, color='blue')
+    ax[0].bar(age_range[age_range.index > 80].index, age_range[age_range.index > 80].values, color='red')
+    ax[0].set_xlabel('Age')
+    ax[0].set_ylabel('Count')
+    ax[0].set_title('Age Distribution') 
+    # Annotate outliers (ages > 80)
+    outliers = age_range[age_range.index > 80]
+    for age, count in zip(outliers.index, outliers.values):
+        ax[0].text(age, count, 'Outlier', fontsize=12, color='red', ha='center', va='bottom')
+        
+    #Company size distribution
+    sns.countplot(x='How many employees does your company or organization have?', data=data, ax=ax[1])
+    ax[1].set_xlabel('Company Size')
+    ax[1].tick_params(axis='x', rotation=45)
+    ax[1].set_title('Company Size Distribution')
+    plt.tight_layout()
+    plt.show()
+
+
+    #Distribution of the 'What country do you live in?' column and 'What country do you work in?' column in a single barplot for comparison
+    df_melted = pd.melt(data, 
+                    value_vars=['What country do you live in?', 'What country do you work in?'], 
+                    var_name='Country Type', 
+                    value_name='Country')
+
+    # Create a bar plot where each country has two bars (one for living, one for working)
+    plt.figure(figsize=(15, 6))
+    sns.countplot(x='Country', hue='Country Type', data=df_melted)
+    plt.xticks(rotation=90)
+    plt.xlabel('Country')
+    plt.ylabel('Count')
+    plt.title('Distribution of Country of Residence vs Work')
+    plt.tight_layout()
+    plt.show()
+
+    return data
+data = descriptive_statistics(data)
 
 
 def preprocess_data(data, missing_threshold=0.6):
@@ -48,9 +105,9 @@ def preprocess_data(data, missing_threshold=0.6):
     for col in object_cols:
         data[col] = data[col].fillna('unknown')
 
-    # Delete rows with missing values in  "What is your age?" column and any age above 100
+    # Delete rows with missing values in  "What is your age?" column and any age above 80
     data = data.dropna(subset=['What is your age?'])
-    data = data.drop(data[data['What is your age?'] > 100].index)
+    data = data.drop(data[data['What is your age?'] > 80].index)
     #check for anomalies in the age column
     #sns.boxplot(data['What is your age?'])
     #plt.title('Age distribution')
@@ -231,11 +288,11 @@ vif_data['VIF'] = [variance_inflation_factor(final_data.values, i) for i in rang
 print(vif_data)
 
 #Calculate the correlation matrix for features with VIF greater than 3
-high_vif = vif_data[vif_data['VIF'] > 3]
-corr_matrix = final_data[high_vif['feature']].corr()
-sns.heatmap(corr_matrix, annot=True)
-plt.title('Correlation matrix for features with VIF > 3')
-plt.show()
+#high_vif = vif_data[vif_data['VIF'] > 3]
+#corr_matrix = final_data[high_vif['feature']].corr()
+#sns.heatmap(corr_matrix, annot=True)
+#plt.title('Correlation matrix for features with VIF > 3')
+#plt.show()
 
 
 
