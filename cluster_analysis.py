@@ -4,153 +4,158 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-data = pd.read_csv('final_data_clustered.csv')
-xdata = pd.read_csv('clustered_data.csv')
+data = pd.read_csv('clustered_data.csv')
 
+fig, ax = plt.subplots(1, 3, figsize=(15, 6))
 
-#plot age average per cluster
-sns.barplot(x='cluster', y='What is your age?', data=data)
-plt.title('Average age per Cluster')
+#Plotting Sharing mental health issue with family and friends per cluster, subplot 1
+sns.countplot(x='cluster', hue='Sharing mental health issue with family and friends', data=data, palette='Greys', ax=ax[0])
+ax[0].set_title('Willingness to Share Mental Health Issues with Family and Friends', fontsize=8)
+ax[0].set_xlabel('Cluster')
+ax[0].set_ylabel('Count')
+ax[0].legend(title='Willingness', loc='upper right', fontsize='small')
+
+#Plotting Mental health effects on work when not treated effectively per cluster, subplot 2
+sns.countplot(x='cluster', hue='Mental health effects on work when not treated effectively', data=data, palette='viridis', ax=ax[1])
+ax[1].set_title('Mental Health Effects on Work when not Treated Effectively', fontsize=8)
+ax[1].set_xlabel('Cluster')
+ax[1].set_ylabel('Count')
+ax[1].legend(title='Response', loc='upper right', fontsize='small')
+
+#Plotting Mental health effects on work when treated effectively per cluster, subplot 3
+sns.countplot(x='cluster', hue='Mental health effects on work when treated effectively', data=data, palette='viridis', ax=ax[2])
+ax[2].set_title('Mental Health Effects on Work when Treated Effectively', fontsize=8)
+ax[2].set_xlabel('Cluster')
+ax[2].set_ylabel('Count')
+ax[2].legend(title='Response', loc='upper right', fontsize='small')
+
+plt.tight_layout()
 plt.show()
 
-#plot the number of gender per cluster
-gender_count = data.groupby('cluster')['What is your gender?'].value_counts().unstack().plot(kind='bar', stacked=True)
-plt.title('Gender per cluster')
-plt.legend(title='Gender ', loc='upper right', labels =['Female','Male'])
-plt.show()
+# Set the visual theme for better aesthetics
+sns.set_theme(style="whitegrid")
 
-
-#plot 'Support' column per cluster
-support_count = data.groupby('cluster')['Support'].value_counts().unstack().plot(kind='bar', stacked=True)
-plt.title('Support roles per Cluster')
-plt.legend(title='Responce categories', loc='upper right', labels=['No', 'Yes'])
-plt.show()
-
-
-#plot 'Supervisor/Team Lead' column per cluster
-sns.barplot(x='cluster', y='Supervisor/Team Lead', data=data)
-plt.title('Supervisor roles per Cluster')
-plt.show()
-
-#plot 'Sales' column per cluster
-sns.barplot(x='cluster', y='Sales', data=data)
-plt.title('Sales roles per Cluster')
-plt.show()
-
-#plot 'HR' column per cluster
-sns.barplot(x='cluster', y='HR', data=data)
-plt.title('HR roles per Cluster')
-plt.show()
-
-#plot 'Front-end Developer' column per cluster
-sns.barplot(x='cluster', y='Front-end Developer', data=data)
-plt.title('Front-end Developer roles per Cluster')
-plt.show()
-
-#plot 'Executive Leadership' column per cluster
-sns.barplot(x='cluster', y='Executive Leadership', data=data)
-plt.title('Executive Leadership roles per Cluster')
-plt.show()
-
-#plot 'DevOps/SysAdmin' column per cluster
-sns.barplot(x='cluster', y='DevOps/SysAdmin', data=data)
-plt.title('DevOps/SysAdmin roles per Cluster')
-plt.show()
-
-#plot 'Dev Evangelist/Advocate' column per cluster
-sns.barplot(x='cluster', y='Dev Evangelist/Advocate', data=data)
-plt.title('Dev Evangelist/Advocate roles  per Cluster')
-plt.legend(title='Responce categories', loc='upper right', labels=['Yes', 'No'])
-plt.show()
-
-
-#plot the average employee size per cluster from the 'How many employees does your company or organization have?' column
-sns.barplot(x='cluster', y='How many employees does your company or organization have?', data=data)
-plt.title('Average employee size per Cluster')
-plt.show()
-
-#plot number of people pre cluster on the 'Do you know the options for mental health care available under your employer-provided coverage?' column
-sns.countplot(x='cluster', hue='Do you know the options for mental health care available under your employer-provided coverage?', data=data)
-plt.title('Do you know the options for mental health care available under your employer-provided coverage?')
-plt.legend(title='Responce categories', loc='upper right', labels=['No response', 'No','I am not sure', 'Yes'])
-plt.show()
-
-#plot number of people pre cluster on the 'Were you aware of the options for mental health care provided by your previous employers?' column
-sns.countplot(x='cluster', hue='Were you aware of the options for mental health care provided by your previous employers?', data=data)
-plt.title('Awareness of mental health care options provided by previous employers per Cluster')
-plt.legend(title='Responce categories', loc='upper right', labels=['No response', 'No','Was aware of some', 'Yes'])
-plt.show()
-
-#plot the top 3 countries per cluster
-country_counts = data.groupby(['cluster', 'What country do you work in?']).size().reset_index(name='count')
-top_countries_per_cluster = country_counts.groupby('cluster').apply(lambda x: x.nlargest(3, 'count')).reset_index(drop=True)
+# Plot average age per cluster
 plt.figure(figsize=(10, 6))
-sns.barplot(x='cluster', y='count', hue='What country do you work in?', data=top_countries_per_cluster)
-plt.legend(title='Country code', loc='upper right')
-#add legend explaining the country codes
-plt.text(0.5, 0.5, '2: Australia\n10: Canada\n21: Germany\n33:Netherlands\n49:United Kingdom\n50:USA', fontsize=10, transform=plt.gcf().transFigure)
-plt.title('Top 3 Countries per Cluster')
+sns.barplot(x='cluster', y='What is your age?', data=data, palette='viridis')
+plt.title('Average Age per Cluster')
+plt.xlabel('Cluster')
+plt.ylabel('Average Age')
 plt.show()
 
-#plot number of people pre cluster on the 'Do you work remotely?' column
-sns.countplot(x='cluster', hue='Do you work remotely?', data=data)
-plt.title('Remote working per Cluster')
-plt.legend(title='Responce categories', loc='upper right', labels=['Never', 'Sometimes','Always'])
+# Plot number of employees per cluster
+plt.figure(figsize=(10, 6))
+sns.barplot(x='cluster', y='How many employees does your company or organization have?', data=data, palette='coolwarm')
+plt.title('Average Number of Employees per Cluster')
+plt.xlabel('Cluster')
+plt.ylabel('Average Number of Employees')
 plt.show()
 
-sns.countplot(x='cluster', hue='Do you have a family history of mental illness?', data=data)
-plt.title('Family history of mental illness per Cluster')
-plt.legend(title='Responce categories', loc='upper right', labels=["I don't know", 'No','Yes'])
-plt.show()
-
-
-sns.countplot(x='cluster', hue='Have you observed or experienced an unsupportive or badly handled response to a mental health issue in your current or previous workplace?', data=data)
-plt.title('Have you observed or experienced Unsupportive response to mental health issue per Cluster')
-plt.legend(title='Responce categories', loc='upper right', labels=['No response', 'No','Maybe','Yes'])
-plt.show()
-
-
-sns.countplot(x='cluster', hue='Have you had mental health benefits before', data=data)
-plt.title('Prior mental health benefits per Cluster')
-plt.legend(title='Responce categories', loc='upper right', labels=["I don't know", 'No','Some', 'Yes'])
-plt.show()
-
-sns.countplot(x='cluster', hue='How easy is it to ask for mental health leave?', data=data)
-plt.title('Ease of asking for mental health leave per Cluster')
-plt.legend(title='Response categories', loc='upper right', labels=['Very difficult','Somewhat difficult','Neither easy nor difficult','Somewhat easy','Very easy'])
-plt.show()
-
-sns.countplot(x='cluster', hue='Mental health effects on work when treated effectively', data=data)
-plt.title('Mental health effects on work when treated effectively per Cluster')
-plt.legend(title='Response categories', loc='upper right', labels=['No response', 'Never','Rarely','Often'])
-plt.show()
-
-sns.countplot(x='cluster', hue='Do you think that discussing a mental health disorder with previous employers would have negative consequences?', data=data)
-plt.title('Negative consequancesfrom discussing mental health disorder with previous employers per Cluster')
-plt.legend(title='Response categories', loc='upper right', labels=["I don't know", 'None of them','Some of them','Yes, all of them'])
-plt.show()
-
-sns.countplot(x='cluster', hue='Do you think that discussing a physical health issue with previous employers would have negative consequences?', data=data)
-plt.title('Negative consequances from discussing physical health issue with previous employers per Cluster')
-plt.legend(title='Response categories', loc='upper right', labels=["I don't know", 'None of them','Some of them','Yes, all of them'])
-plt.show()
-
-sns.countplot(x='cluster', hue='Would you have been willing to discuss a mental health issue with your direct supervisor(s)?', data=data)
-plt.title('Willingness to discuss mental health issue with direct supervisor per Cluster')
-plt.legend(title='Response categories', loc='upper right', labels=["I don't know", 'No','Some','Yes,all'])
-plt.show()
-
-#plot number of people pre cluster on the 'Do you think that discussing a physical health issue with your employer would have negative consequences?' column
-sns.countplot(x='cluster', hue='Do you think that discussing a physical health issue with your employer would have negative consequences?', data=data)
-plt.title('Physical health issue discussion with employer per Cluster')
-plt.legend(title='Responce categories', loc='upper right', labels=["I don't know", 'No','Maybe', 'Yes'])
-plt.show()
-
-#plot number of people pre cluster on the 'Would you feel comfortable discussing a mental health disorder with your coworkers?' column
-sns.countplot(x='cluster', hue='Would you feel comfortable discussing a mental health disorder with your coworkers?', data=data)
-plt.title('Comfort discussing mental health disorder with coworkers per Cluster')
-plt.legend(title='Responce categories', loc='upper right', labels=['No response', 'No','Maybe','Yes'])
+# Plot knowledge of mental health care options per cluster
+plt.figure(figsize=(10, 6))
+sns.countplot(x='cluster', hue='Do you know the options for mental health care available under your employer-provided coverage?', data=data, palette='Set1')
+plt.title('Knowledge of Mental Health Care Options per Cluster')
+plt.xlabel('Cluster')
+plt.ylabel('Count')
+plt.legend(title='Knowledge')
 plt.show()
 
 
+# Plot employer seriousness about mental health vs physical health per cluster
+plt.figure(figsize=(10, 6))
+sns.countplot(x='cluster', hue='Do you feel that your employer takes mental health as seriously as physical health?', data=data, palette='Set2')
+plt.title('Employer Seriousness about Mental Health vs Physical Health per Cluster')
+plt.xlabel('Cluster')
+plt.ylabel('Count')
+plt.legend(title='Seriousness')
+plt.show()
 
+# Plot previous employer's discussion of mental health per cluster
+plt.figure(figsize=(10, 6))
+sns.countplot(x='cluster', hue='Did your previous employers ever formally discuss mental health (as part of a wellness campaign or other official communication)?', data=data, palette='Dark2')
+plt.title('Discussion of Mental Health by Previous Employers per Cluster')
+plt.xlabel('Cluster')
+plt.ylabel('Count')
+plt.legend(title='Discussion')
+plt.show()
+
+# Plot negative consequences of discussing mental health issues with previous employers per cluster
+plt.figure(figsize=(10, 6))
+sns.countplot(x='cluster', hue='Do you think that discussing a mental health disorder with previous employers would have negative consequences?', data=data, palette='Blues')
+plt.title('Negative Consequences of Discussing Mental Health Disorder per Cluster')
+plt.xlabel('Cluster')
+plt.ylabel('Count')
+plt.legend(title='Negative Consequences')
+plt.show()
+
+# Plot negative consequences of discussing physical health issues with previous employers per cluster
+plt.figure(figsize=(10, 6))
+sns.countplot(x='cluster', hue='Do you think that discussing a physical health issue with previous employers would have negative consequences?', data=data, palette='Greens')
+plt.title('Negative Consequences of Discussing Physical Health Issue per Cluster')
+plt.xlabel('Cluster')
+plt.ylabel('Count')
+plt.legend(title='Negative Consequences')
+plt.show()
+
+# Plot perceptions of career impact due to mental health issues per cluster
+plt.figure(figsize=(10, 6))
+sns.countplot(x='cluster', hue='Do you feel that being identified as a person with a mental health issue would hurt your career?', data=data, palette='Oranges')
+plt.title('Perceptions of Career Impact due to Mental Health Issues per Cluster')
+plt.xlabel('Cluster')
+plt.ylabel('Count')
+plt.legend(title='Career Impact')
+plt.show()
+
+# Plot unsupportive responses to mental health issues in the workplace per cluster
+plt.figure(figsize=(10, 6))
+sns.countplot(x='cluster', hue='Have you observed or experienced an unsupportive or badly handled response to a mental health issue in your current or previous workplace?', data=data, palette='Reds')
+plt.title('Unsupportive Responses to Mental Health Issues per Cluster')
+plt.xlabel('Cluster')
+plt.ylabel('Count')
+plt.legend(title='Unsupportive Responses')
+plt.show()
+
+# Plot family history of mental illness per cluster
+plt.figure(figsize=(10, 6))
+sns.countplot(x='cluster', hue='Do you have a family history of mental illness?', data=data, palette='Purples')
+plt.title('Family History of Mental Illness per Cluster')
+plt.xlabel('Cluster')
+plt.ylabel('Count')
+plt.legend(title='Family History')
+plt.show()
+
+# Plot current mental health disorder status per cluster
+plt.figure(figsize=(10, 6))
+sns.countplot(x='cluster', hue='Do you currently have a mental health disorder?', data=data, palette='cividis')
+plt.title('Current Mental Health Disorder Status per Cluster')
+plt.xlabel('Cluster')
+plt.ylabel('Count')
+plt.legend(title='Mental Health Disorder')
+plt.show()
+
+# Plot remote work status per cluster
+plt.figure(figsize=(10, 6))
+sns.countplot(x='cluster', hue='Do you work remotely?', data=data, palette='BuPu')
+plt.title('Remote Work Status per Cluster')
+plt.xlabel('Cluster')
+plt.ylabel('Count')
+plt.legend(title='Remote Work')
+plt.show()
+
+# Plot ease of asking for mental health leave per cluster
+plt.figure(figsize=(10, 6))
+sns.countplot(x='cluster', hue='How easy is it to ask for mental health leave?', data=data, palette='YlOrBr')
+plt.title('Ease of Asking for Mental Health Leave per Cluster')
+plt.xlabel('Cluster')
+plt.ylabel('Count')
+plt.legend(title='Ease of Asking')
+plt.show()
+
+# Plot sharing mental health issues with family and friends per cluster
+plt.figure(figsize=(10, 6))
+sns.countplot(x='cluster', hue='Sharing mental health issue with family and friends', data=data, palette='Greys')
+plt.title('Sharing Mental Health Issues with Family and Friends per Cluster')
+plt.xlabel('Cluster')
+plt.ylabel('Count')
+plt.legend(title='Sharing Mental Health Issues')
+plt.show()

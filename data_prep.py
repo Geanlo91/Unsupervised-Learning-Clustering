@@ -212,19 +212,19 @@ def feature_engineering(cleaned_data):
 
     # Create a new column "leave" based on the "If a mental health issue prompted you to request a medical leave from work, asking for that leave would be:" column
     cleaned_data['How easy is it to ask for mental health leave?'] = cleaned_data['If a mental health issue prompted you to request a medical leave from work, asking for that leave would be:']\
-        .replace(to_replace=['Very easy', 'Somewhat easy','Neither easy nor difficult','Somewhat difficult', 'Very difficult','unknown',"I don't know"], value=[2,1,0,-1,-2,-3,-3])
+        .replace(to_replace=['Very easy', 'Somewhat easy','Neither easy nor difficult','Somewhat difficult', 'Very difficult','unknown',"I don't know"], value=[5,4,3,2,1,-1,0])
     #delete the original column
     cleaned_data = cleaned_data.drop(['If a mental health issue prompted you to request a medical leave from work, asking for that leave would be:'], axis=1)
 
     # Create a new column "Mental health effects on work when treated effectively" based on the "If you have a mental health issue, do you feel that it interferes with your work when being treated effectively?" column
     cleaned_data['Mental health effects on work when treated effectively'] = cleaned_data['If you have a mental health issue, do you feel that it interferes with your work when being treated effectively?']\
-        .replace(to_replace=['Not applicable to me', 'Rarely', 'Sometimes', 'Often', 'unknown','Never'], value=[-1, 1, 2, 3,-1,0])
+        .replace(to_replace=['Not applicable to me', 'Rarely', 'Sometimes', 'Often', 'unknown','Never'], value=[0, 2, 3, 4,-1,1])
     #delete the original column
     cleaned_data = cleaned_data.drop(['If you have a mental health issue, do you feel that it interferes with your work when being treated effectively?'], axis=1)
 
     # Create a new column "Mental health effects on work when not treated effectively" based on the "If you have a mental health issue, do you feel that it interferes with your work when NOT being treated effectively?" column
     cleaned_data['Mental health effects on work when not treated effectively'] = cleaned_data['If you have a mental health issue, do you feel that it interferes with your work when NOT being treated effectively?']\
-        .replace(to_replace=['Not applicable to me', 'Rarely', 'Sometimes', 'Often', 'unknown','Never'], value=[-1, 1, 2, 3,-1,0])
+        .replace(to_replace=['Not applicable to me', 'Rarely', 'Sometimes', 'Often', 'unknown','Never'], value=[0, 2, 3, 4,-1,1])
     #delete the original column
     cleaned_data = cleaned_data.drop(['If you have a mental health issue, do you feel that it interferes with your work when NOT being treated effectively?'], axis=1)
 
@@ -275,6 +275,8 @@ def feature_engineering(cleaned_data):
     #scale the "How many employees does your company or organization have?" column
     scaler = StandardScaler()
     cleaned_data['How many employees does your company or organization have?'] = scaler.fit_transform(cleaned_data[['How many employees does your company or organization have?']])
+    #scale the "What is your age?" column
+    cleaned_data['What is your age?'] = scaler.fit_transform(cleaned_data[['What is your age?']])
 
         
     return cleaned_data

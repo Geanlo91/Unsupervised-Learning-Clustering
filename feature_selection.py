@@ -14,7 +14,7 @@ scaler = StandardScaler()
 X = scaler.fit_transform(data)
 
 # Initialize Random Forest Classifier
-rf = RandomForestClassifier(n_estimators=300, max_depth=10, min_samples_split=5, random_state=42)
+rf = RandomForestClassifier(n_estimators=1000, max_depth=None, min_samples_split=2, random_state=42)
 
 # Train RandomForest on pseudo-targets multiple times
 importances = np.zeros(X.shape[1])
@@ -27,7 +27,7 @@ for _ in range(10):
 importances /= 10
 
 # Select top features using SelectFromModel
-selector = SelectFromModel(rf, threshold='median', prefit=True)
+selector = SelectFromModel(rf, threshold='mean', prefit=True)
 X_reduced = selector.transform(X)
 selected_features_SFM = data.columns[selector.get_support()]
 
@@ -52,4 +52,5 @@ selected_features_data.to_csv('selected_features.csv', index=False)
 # Print selected features
 print(selected_features_data.shape)
 print(selected_features_data.head()) 
+print(selected_features_data.columns)
 
