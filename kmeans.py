@@ -6,7 +6,6 @@ from sklearn.decomposition import PCA
 
 
 data = pd.read_csv('selected_features.csv') 
-fdata = pd.read_csv('final_data.csv')
 
 def kmeans_clustering(data, n_clusters):
     kmeans = KMeans(n_clusters=n_clusters, random_state=0)
@@ -54,9 +53,10 @@ plt.show()
 
 #save the data with cluster labels into a new csv file
 data.to_csv('clustered_data.csv', index=False)
-print(data.head())
-print(data.shape)
-print(data.columns)
+
+#read the data with cluster labels
+clustered_data = pd.read_csv('clustered_data.csv')
+print(clustered_data.columns)
 
 
 
