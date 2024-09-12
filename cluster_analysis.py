@@ -229,6 +229,31 @@ plt.show()
 cluster_0 = data[data['cluster'] == 0]['What is your age?']
 cluster_1 = data[data['cluster'] == 1]['What is your age?']
 f_oneway(cluster_0, cluster_1)
-print(f_oneway(cluster_0, cluster_1))
+print('Average age:', f_oneway(cluster_0, cluster_1))
+
+#Running ANOVA test to check if there is a significant difference in the average company size of the clusters
+cluster_0 = data[data['cluster'] == 0]['How many employees does your company or organization have?']
+cluster_1 = data[data['cluster'] == 1]['How many employees does your company or organization have?']
+f_oneway(cluster_0, cluster_1)
+print('Average company size:', f_oneway(cluster_0, cluster_1))
+
+#Running ANOVA test to check if there is a significant difference in 'Do you have a family history of mental illness?' of the clusters
+cluster_0 = data[data['cluster'] == 0]['Do you have a family history of mental illness?']
+cluster_1 = data[data['cluster'] == 1]['Do you have a family history of mental illness?']
+f_oneway(cluster_0, cluster_1)
+print('Family history of mental illness:', f_oneway(cluster_0, cluster_1))
+
+#Running ANOVA test to check if there is a significant difference in 'Do you currently have a mental health disorder?' of the clusters     
+cluster_0 = data[data['cluster'] == 0]['Do you currently have a mental health disorder?']
+cluster_1 = data[data['cluster'] == 1]['Do you currently have a mental health disorder?']
+f_oneway(cluster_0, cluster_1)
+print('Current mental health disorder:', f_oneway(cluster_0, cluster_1))
+
+#Running ANOVA test to check if there is a significant difference in 'Did your previous employers provide resources to learn more about mental health issues and how to seek help?' of the clusters
+cluster_0 = data[data['cluster'] == 0]['Did your previous employers provide resources to learn more about mental health issues and how to seek help?']
+cluster_1 = data[data['cluster'] == 1]['Did your previous employers provide resources to learn more about mental health issues and how to seek help?']
+f_oneway(cluster_0, cluster_1)
+print('Previous Employer Resources:', f_oneway(cluster_0, cluster_1))
+
 
 
