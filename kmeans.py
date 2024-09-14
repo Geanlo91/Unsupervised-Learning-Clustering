@@ -54,10 +54,6 @@ plt.show()
 #save the data with cluster labels into a new csv file
 data.to_csv('clustered_data.csv', index=False)
 
-#read the data with cluster labels
-clustered_data = pd.read_csv('clustered_data.csv')
-print(clustered_data.columns)
-
 
 
 

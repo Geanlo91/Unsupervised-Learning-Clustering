@@ -13,7 +13,7 @@ fig.suptitle('Effects of Mental Health issues on work per Cluster', fontsize=10)
 
 #Plotting 'Do you think that team members/co-workers would view you more negatively if they knew you suffered from a mental health issue?' per cluster
 sns.countplot(x='cluster', hue='Do you think that team members/co-workers would view you more negatively if they knew you suffered from a mental health issue?', data=data, palette='viridis', ax=ax[0])
-ax[0].set_title('Negative Perception from co-workers due to Mental Health Issues', fontsize=8)
+ax[0].set_title('Would co-workers view you negatively if they knew you had a mental health issue?', fontsize=8)
 ax[0].set_xlabel('Cluster')
 ax[0].set_ylabel('Count')
 handles, labels = ax[0].get_legend_handles_labels()
@@ -22,16 +22,15 @@ ax[0].legend(handles, custom_labels, title='Perception', loc='upper right', font
 
 #Plotting 'Do you feel that being identified as a person with a mental health issue would hurt your career?' per cluster
 sns.countplot(x='cluster', hue='Do you feel that being identified as a person with a mental health issue would hurt your career?', data=data, palette='viridis', ax=ax[1])  
-ax[1].set_title('Career Impacts due to Mental Health Issues', fontsize=8)
+ax[1].set_title('Would being identified with a mental health issue hurt your career?', fontsize=8)
 ax[1].set_xlabel('Cluster')
 ax[1].set_ylabel('Count')
 handles, labels = ax[1].get_legend_handles_labels()
 custom_labels = ['No','Maybe','Yes']
-ax[1].legend(handles, custom_labels, title='Consequences', loc='upper right', fontsize='small')
+ax[1].legend(handles, custom_labels, title='Responses', loc='upper right', fontsize='small')
 
 plt.tight_layout()
 plt.show()
-
 
 
 
@@ -40,17 +39,19 @@ fig, ax = plt.subplots(2, 3, figsize=(15, 6))
 #Assign the name  of the figure
 fig.suptitle('Personal Mental Health & Demographics per cluster', fontsize=10)
 
-# Plotting the average age per cluster, subplot 1
+# Plotting the average age per cluster from the merged data, subplot 1
 sns.barplot(x='cluster', y='What is your age?', data=data, palette='viridis', ax=ax[0, 0])
 ax[0, 0].set_title('Average Age', fontsize=8)
 ax[0, 0].set_xlabel('Cluster')
 ax[0, 0].set_ylabel('Average Age')
+
 
 # Plotting the average number of employees per cluster, subplot 2
 sns.barplot(x='cluster', y='How many employees does your company or organization have?', data=data, palette='viridis', ax=ax[0, 1])
 ax[0, 1].set_title('Average company size', fontsize=8)
 ax[0, 1].set_xlabel('Cluster')
 ax[0, 1].set_ylabel('Average Number of Employees')
+
 
 # Plotting 'do you work remotely?' per cluster, subplot 3
 sns.countplot(x='cluster', hue='Do you work remotely?', data=data, palette='viridis', ax=ax[0, 2])
@@ -59,7 +60,7 @@ ax[0, 2].set_xlabel('Cluster')
 ax[0, 2].set_ylabel('Count')
 handles, labels = ax[0, 2].get_legend_handles_labels()
 custom_labels = ['Never','Sometimes','Always']
-ax[0, 2].legend(handles, custom_labels, title='Consequences', loc='upper right', fontsize='small')
+ax[0, 2].legend(handles, custom_labels, title='Working remotely', loc='upper right', fontsize='small')
 
 #Plotting Do you currently have a mental health disorder? per cluster
 sns.countplot(x='cluster', hue='Do you currently have a mental health disorder?', data=data, palette='viridis', ax=ax[1, 0])
@@ -100,7 +101,7 @@ fig.suptitle('Effects of Discussing and sharing Mental Health and Physical Healt
 
 #Plotting 'Do you think that discussing a mental health disorder with previous employers would have negative consequences?' per cluster
 sns.countplot(x='cluster', hue='Do you think that discussing a mental health disorder with previous employers would have negative consequences?', data=data, palette='viridis', ax=ax[0, 0])
-ax[0, 0].set_title('Negative Consequences of Discussing Mental Health Disorder', fontsize=8)
+ax[0, 0].set_title('Would discussing a Mental health issue with ex-employers have negative consequences?', fontsize=8)
 ax[0, 0].set_xlabel('Cluster')
 ax[0, 0].set_ylabel('Count')
 handles, labels = ax[0, 0].get_legend_handles_labels()
@@ -109,7 +110,7 @@ ax[0, 0].legend(handles, custom_labels, title='Consequences', loc='upper right',
 
 #Plotting 'Do you think that discussing a physical health issue with previous employers would have negative consequences?' per cluster
 sns.countplot(x='cluster', hue='Do you think that discussing a physical health issue with previous employers would have negative consequences?', data=data, palette='viridis', ax=ax[0, 1])
-ax[0, 1].set_title('Negative Consequences of Discussing Physical Health Disorder', fontsize=8)
+ax[0, 1].set_title('Would discussing physical health issues with ex-employers have negative consequences?', fontsize=8)
 ax[0, 1].set_xlabel('Cluster')
 ax[0, 1].set_ylabel('Count')
 handles, labels = ax[0, 1].get_legend_handles_labels()
@@ -136,12 +137,12 @@ ax[1, 1].legend(handles, custom_labels, title='Responses', loc='upper right', fo
 
 #Plotting 'Did you hear of or observe negative consequences for co-workers with mental health issues in your current or previous workplace?' per cluster
 sns.countplot(x='cluster', hue='Did you hear of or observe negative consequences for co-workers with mental health issues in your previous workplaces?', data=data, palette='viridis', ax=ax[2, 0])
-ax[2, 0].set_title('Negative Consequences for Co-workers with Mental Health Issues', fontsize=8)
+ax[2, 0].set_title('Observing Negative Consequences for Co-workers with Mental Health Issues', fontsize=8)
 ax[2, 0].set_xlabel('Cluster')
 ax[2, 0].set_ylabel('Count')
 handles, labels = ax[2, 0].get_legend_handles_labels()
 custom_labels = ['No response','None of them','Some of them','Yes, all of them']
-ax[2, 0].legend(handles, custom_labels, title='Consequences', loc='upper right', fontsize='small')
+ax[2, 0].legend(handles, custom_labels, title='Observations', loc='upper right', fontsize='small')
 
 #Plotting 'Was your anonymity protected if you chose to take advantage of mental health or substance abuse treatment resources with previous employers?' per cluster
 sns.countplot(x='cluster', hue='Was your anonymity protected if you chose to take advantage of mental health or substance abuse treatment resources with previous employers?', data=data, palette='viridis', ax=ax[2, 1])
@@ -181,12 +182,12 @@ ax[0, 1].legend(handles, custom_labels, title='Responses', loc='upper right', fo
 
 #Plotting 'Do you feel that your employer takes mental health as seriously as physical health?' per cluster
 sns.countplot(x='cluster', hue='Do you feel that your employer takes mental health as seriously as physical health?', data=data, palette='viridis', ax=ax[1, 0])
-ax[1, 0].set_title('Does employer taken Mental Health seriously vs physical health', fontsize=8)
+ax[1, 0].set_title('Does employer take Mental Health seriously vs physical health', fontsize=8)
 ax[1, 0].set_xlabel('Cluster')
 ax[1, 0].set_ylabel('Count')
 handles, labels = ax[1, 0].get_legend_handles_labels()
 custom_labels = ["I don't know",'No','Yes']
-ax[1, 0].legend(handles, custom_labels, title='Perception', loc='upper right', fontsize='small')
+ax[1, 0].legend(handles, custom_labels, title='Responses', loc='upper right', fontsize='small')
 
 #Plotting 'Did your previous employers provide resources to learn more about mental health issues and how to seek help?' per cluster
 sns.countplot(x='cluster', hue='Did your previous employers provide resources to learn more about mental health issues and how to seek help?', data=data, palette='viridis', ax=ax[1, 1])
@@ -199,30 +200,51 @@ ax[1, 1].legend(handles, custom_labels, title='Responses', loc='upper right', fo
 
 #Plotting 'Did you feel that your previous employers took mental health as seriously as physical health?' per cluster
 sns.countplot(x='cluster', hue='Did you feel that your previous employers took mental health as seriously as physical health?', data=data, palette='viridis', ax=ax[1, 2])
-ax[1, 2].set_title('Previous Employer Perception on Mental Health vs physical', fontsize=8)
+ax[1, 2].set_title('Did your ex-employers take mental health as seriously as physical health?', fontsize=8)
 ax[1, 2].set_xlabel('Cluster')
 ax[1, 2].set_ylabel('Count')
 handles, labels = ax[1, 2].get_legend_handles_labels()
 custom_labels = ["I don't know",'None did','Some did','Yes, all did']
-ax[1, 2].legend(handles, custom_labels, title='Perception', loc='upper right', fontsize='small')
+ax[1, 2].legend(handles, custom_labels, title='Responses', loc='upper right', fontsize='small')
 
 plt.tight_layout()
 plt.show()
 
 
 #Plotting values in each cluster in one graph and show the count inside the bar
-fig, ax = plt.subplots(1, 1, figsize=(15, 6))
-fig.suptitle('Cluster Distribution', fontsize=10)
-sns.countplot(x='cluster', data=data, palette='viridis', ax=ax)
-ax.set_title('Cluster Distribution', fontsize=8)
-ax.set_xlabel('Cluster')
-
+sns.countplot(x='cluster', data=data, palette='viridis')
+plt.title('Number of Participants in each Cluster', fontsize=10)
+plt.xlabel('Cluster')
+plt.ylabel('Count')
 # Add the count of each cluster inside the bar
-for p in ax.patches:
-    ax.annotate(f'\n{p.get_height()}', (p.get_x()+0.4, p.get_height()), ha='center', va='top', color='black', size=10)
-
+for i in range(2):
+    count = data['cluster'].value_counts().values[i]
+    plt.text(i, count, str(count), ha='center', va='bottom')
 plt.show()
 
+fig, ax = plt.subplots(1, 2, figsize=(15, 6))
+fig.suptitle('Deep dive into Current Mental health and Family history', fontsize=10)
+
+#Plotting 'Do you currently have a mental health disorder?' only choosing answer 2 per cluster
+sns.countplot(x='cluster', hue='Do you currently have a mental health disorder?', data=data[data['Do you currently have a mental health disorder?'] == 2], palette='viridis', ax=ax[0])
+ax[0].set_title('Current Mental Health Disorder', fontsize=8)
+ax[0].set_xlabel('Cluster')
+ax[0].set_ylabel('Count')
+handles, labels = ax[0].get_legend_handles_labels()
+custom_labels = ['Yes']
+ax[0].legend(handles, custom_labels, title='Current Mental Health Disorder', loc='upper right', fontsize='small')
+
+#Plotting 'Do you have a family history of mental illness?' only choosing answer 2 per cluster
+sns.countplot(x='cluster', hue='Do you have a family history of mental illness?', data=data[data['Do you have a family history of mental illness?'] == 2], palette='viridis', ax=ax[1])
+ax[1].set_title('Family History of Mental Illness', fontsize=8)
+ax[1].set_xlabel('Cluster')
+ax[1].set_ylabel('Count')
+handles, labels = ax[1].get_legend_handles_labels()
+custom_labels = ['Yes']
+ax[1].legend(handles, custom_labels, title='Family History', loc='upper right', fontsize='small')
+
+plt.tight_layout()
+plt.show()
 
 
 #Running ANOVA test to check if there is a significant difference in the average age of the clusters
@@ -256,4 +278,26 @@ f_oneway(cluster_0, cluster_1)
 print('Previous Employer Resources:', f_oneway(cluster_0, cluster_1))
 
 
+#read the data with cluster labels
+clustered_data = pd.read_csv('clustered_data.csv')
 
+#Add the cluster labels to the original data
+data_file = 'mental-heath-in-tech-2016_20161114.csv'
+data = pd.read_csv(data_file)
+data['cluster'] = clustered_data['cluster']
+
+#Filter the data based on the age of the participants and remove null values
+data = data[data['What is your age?'].notnull() & (data['What is your age?'] <= 80)]
+
+#Plot the average age of each cluster
+grouped_data = data.groupby('cluster')
+average_age = grouped_data['What is your age?'].mean()
+average_age.plot(kind='bar')
+plt.title('Average Age of Each Cluster',size=10)
+plt.xlabel('Cluster')
+plt.xticks(rotation=0)
+plt.ylabel('Average Age')
+plt.ylim(5, 40)
+for i, v in enumerate(average_age):
+    plt.text(i, v + 1, str(round(v, 2)), ha='center')
+plt.show()
